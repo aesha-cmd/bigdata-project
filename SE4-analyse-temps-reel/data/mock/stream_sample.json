@@ -1,0 +1,12 @@
+[
+  {"id": 1, "timestamp": "2026-05-01T10:00:00", "valeur": 42.5, "categorie": "A"},
+  {"id": 2, "timestamp": "2026-05-01T10:00:05", "valeur": 38.1, "categorie": "B"},
+  {"id": 3, "timestamp": "2026-05-01T10:00:10", "valeur": 61.3, "categorie": "A"},
+  {"id": 4, "timestamp": "2026-05-01T10:00:15", "valeur": 29.7, "categorie": "C"},
+  {"id": 5, "timestamp": "2026-05-01T10:00:20", "valeur": 55.2, "categorie": "B"},
+  {"id": 6, "timestamp": "2026-05-01T10:00:25", "valeur": 47.8, "categorie": "A"},
+  {"id": 7, "timestamp": "2026-05-01T10:00:30", "valeur": 33.4, "categorie": "C"},
+  {"id": 8, "timestamp": "2026-05-01T10:00:35", "valeur": 50.0, "categorie": "B"},
+  {"id": 9, "timestamp": "2026-05-01T10:00:40", "valeur": 44.1, "categorie": "A"},
+  {"id": 10, "timestamp": "2026-05-01T10:00:45", "valeur": 27.3, "categorie": "C"}
+]
