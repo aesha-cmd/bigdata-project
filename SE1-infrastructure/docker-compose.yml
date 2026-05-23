@@ -1,0 +1,115 @@
+services:
+  namenode:
+    image: apache/hadoop:3.3.6
+    container_name: namenode
+    hostname: namenode
+    user: root
+    ports:
+      - "9870:9870"
+      - "9000:9000"
+    volumes:
+      - namenode_data:/tmp/hadoop-root/dfs/name
+      - ./data:/data
+      - ./scripts:/scripts
+      - ./config/core-site.xml:/opt/hadoop/etc/hadoop/core-site.xml
+      - ./config/hdfs-site.xml:/opt/hadoop/etc/hadoop/hdfs-site.xml
+    command: >
+      bash -c "
+      hdfs namenode -format -force &&
+      hdfs --daemon start namenode &&
+      tail -f /dev/null
+      "
+    networks:
+      - bigdata-net
+
+  datanode1:
+    image: apache/hadoop:3.3.6
+    container_name: datanode1
+    hostname: datanode1
+    user: root
+    depends_on:
+      - namenode
+    volumes:
+      - datanode1_data:/tmp/hadoop-root/dfs/data
+      - ./config/core-site.xml:/opt/hadoop/etc/hadoop/core-site.xml
+      - ./config/hdfs-site.xml:/opt/hadoop/etc/hadoop/hdfs-site.xml
+    command: >
+      bash -c "
+      hdfs --daemon start datanode &&
+      tail -f /dev/null
+      "
+    networks:
+      - bigdata-net
+
+  datanode2:
+    image: apache/hadoop:3.3.6
+    container_name: datanode2
+    hostname: datanode2
+    user: root
+    depends_on:
+      - namenode
+    volumes:
+      - datanode2_data:/tmp/hadoop-root/dfs/data
+      - ./config/core-site.xml:/opt/hadoop/etc/hadoop/core-site.xml
+      - ./config/hdfs-site.xml:/opt/hadoop/etc/hadoop/hdfs-site.xml
+    command: >
+      bash -c "
+      hdfs --daemon start datanode &&
+      tail -f /dev/null
+      "
+    networks:
+      - bigdata-net
+
+  spark-master:
+    image: apache/spark:3.5.1
+    container_name: spark-master
+    hostname: spark-master
+    ports:
+      - "8080:8080"
+      - "7077:7077"
+    command: >
+      /opt/spark/bin/spark-class org.apache.spark.deploy.master.Master
+      --host spark-master
+      --port 7077
+      --webui-port 8080
+    networks:
+      - bigdata-net
+
+  spark-worker-1:
+    image: apache/spark:3.5.1
+    container_name: spark-worker-1
+    hostname: spark-worker-1
+    depends_on:
+      - spark-master
+    command: >
+      /opt/spark/bin/spark-class org.apache.spark.deploy.worker.Worker
+      spark://spark-master:7077
+      --webui-port 8081
+    ports:
+      - "8081:8081"
+    networks:
+      - bigdata-net
+
+  spark-worker-2:
+    image: apache/spark:3.5.1
+    container_name: spark-worker-2
+    hostname: spark-worker-2
+    depends_on:
+      - spark-master
+    command: >
+      /opt/spark/bin/spark-class org.apache.spark.deploy.worker.Worker
+      spark://spark-master:7077
+      --webui-port 8082
+    ports:
+      - "8082:8082"
+    networks:
+      - bigdata-net
+
+volumes:
+  namenode_data:
+  datanode1_data:
+  datanode2_data:
+
+networks:
+  bigdata-net:
+    driver: bridge
